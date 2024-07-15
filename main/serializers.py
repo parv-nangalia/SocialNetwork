@@ -14,7 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         """
-        Custom validation for email field.
         Ensure the email ends with @example.com.
         """
         if not value.endswith('@example.com'):
@@ -40,13 +39,17 @@ class SearchSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.Serializer):
 
-    username = serializers.CharField()
+    email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        username = data.get("username")
+        email = data.get("email")
         password = data.get("password")
-
+        if User.objects.filter(email = email).exists():
+            username = list(User.objects.filter(email = email).values('username'))[0]
+            username = username['username']
+        else:
+            raise serializers.ValidationError("Invalid credentials")
         if username and password:
             user = authenticate(username=username, password=password)
             if user is None:

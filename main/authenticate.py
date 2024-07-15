@@ -33,7 +33,7 @@ class UserLogin(APIView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return Response({'error': 'User Already Authenticated'}, status=status.HTTP_400_BAD_REQUEST)
-        data = {"username" : "" ,"password" : ""}
+        data = {"email" : "" ,"password" : ""}
         return Response(data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
